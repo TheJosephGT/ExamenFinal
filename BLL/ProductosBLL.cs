@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 public class ProductosBLL
 {
@@ -11,8 +12,6 @@ public class ProductosBLL
 
     public List<Productos> GetList(Expression<Func<Productos, bool>> criterio)
     {
-        return _contexto.Productos.Where(criterio).ToList();
+        return _contexto.Productos.AsNoTracking().Where(criterio).ToList();
     }
-
-
 }

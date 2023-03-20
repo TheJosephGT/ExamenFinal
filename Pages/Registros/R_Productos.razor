@@ -1,0 +1,78 @@
+@page "/producto"
+@page "/producto/{productoId:int}"
+
+<PageTitle>Productos</PageTitle>
+
+@inject PaqueteBLL paqueteBLL
+@inject ProductosBLL ProductosBLL
+
+<EditForm Model="paquete">
+</EditForm>
+
+@code {
+    [Parameter]
+    public int PaqueteId { get; set; }
+
+    public Paquete paquete { get; set; } = new Paquete();
+
+
+    protected override void OnInitialized()
+    {
+        if (PaqueteId > 0)
+        {
+
+            this.paquete.PaqueteId = PaqueteId;
+            this.Buscar();
+        }
+    }
+
+    public void Nuevo()
+    {
+        paquete = new Paquete();
+    }
+
+    bool Validar()
+    {
+        if (!String.IsNullOrEmpty(paquete.NombreCliente))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    void Guardar()
+    {
+        if (!Validar()) { return; }
+
+        if (paqueteBLL.Guardar(this.paquete))
+        {
+            this.Nuevo();
+        }
+    }
+
+    private void Buscar()
+    {
+        if (paquete.PaqueteId > 0)
+        {
+            var encontrado = paqueteBLL.Buscar(paquete.PaqueteId);
+
+            if (encontrado != null)
+                this.paquete = encontrado;
+
+        }
+    }
+
+    public void Eliminar()
+    {
+        if (paqueteBLL.Eliminar(paquete.PaqueteId))
+        {
+            Nuevo();
+        }
+        else
+        {
+            return;
+        }
+    }
+}
