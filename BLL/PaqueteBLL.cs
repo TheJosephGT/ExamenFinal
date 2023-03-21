@@ -57,6 +57,36 @@ public class PaqueteBLL
         return false;
     }
 
+    void InsertarDetalle(Paquete paquete)
+    {
+        if (paquete.Productos != null)
+        {
+            foreach (var item in paquete.Productos)
+            {
+                var producto = _contexto.Productos.Find(item.ProductoId);
+                if (producto != null)
+                {
+                    _contexto.Entry(producto).State = EntityState.Modified;
+                    _contexto.SaveChanges();
+                }
+            }
+        }
+    }
+
+    void ModificarDetalle(Paquete paquete)
+    {
+        var productoActual = _contexto.Productos.AsNoTracking().Where(d => d.ProductoId == paquete.ProductoId).ToList();
+        foreach (var item in paquete.Productos)
+        {
+            var producto = _contexto.Productos.Find(item.ProductoId);
+            if (producto != null)
+            {
+                _contexto.Entry(producto).State = EntityState.Modified;
+                _contexto.SaveChanges();
+            }
+        }
+    }
+
     public List<Paquete> GetList(Expression<Func<Paquete, bool>> criterio)
     {
         return _contexto.Paquete.AsNoTracking().Where(criterio).ToList();

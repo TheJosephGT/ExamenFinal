@@ -1,12 +1,99 @@
-@page "/producto"
-@page "/producto/{productoId:int}"
+@page "/paquete"
+@page "/paquete/{paqueteId:int}"
 
 <PageTitle>Productos</PageTitle>
 
 @inject PaqueteBLL paqueteBLL
 @inject ProductosBLL ProductosBLL
 
-<EditForm Model="paquete">
+<EditForm Model="paquete" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h1> Registo de paquete</h1>
+        </div>
+
+        <div class="card-body">
+            @*PaqueteId*@
+            <div class="form-group">
+                <label>PaqueteId: </label><br>
+                <InputNumber @bind-Value="paquete.PaqueteId" class="form-control" /> <br>
+                <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i
+                        class="oi oi-magnifying-glass" /> Buscar</button>
+            </div>
+
+            @*NombreCliente*@
+            <div class="form-group">
+                <label>NombreCliente: </label><br>
+                <InputText @bind-Value="paquete.NombreCliente" class="form-control" />
+                <ValidationMessage For="@(() => paquete.NombreCliente)" />
+            </div>
+
+            @*Fecha*@
+            <div class="form-group">
+                <label>Fecha: </label><br>
+                <InputDate @bind-Value="paquete.Fecha" class="form-control" />
+                <ValidationMessage For="@(() => paquete.Fecha)" />
+            </div>
+
+
+
+            @*--- Pago detalle ---*@
+            <div class="card">
+                <div class="card-header">
+                    <h1>Detalle</h1>
+                </div>
+
+                @*Existencia*@
+                <div class="form-group">
+                    <label>Existencia: </label><br>
+                    <InputNumber @bind-Value="productos.Existencia" class="form-control" />
+                    <ValidationMessage For="@(() => productos.Existencia)" />
+                </div>
+
+                @*Boton*@
+                <div class="card-footer">
+                    <div class="form-group text-center" display: inline-block>
+                        <button type="button" class="btn btn-lg btn-primary" @onclick="AgregarDetalle"><i
+                                class="oi oi-file" /> Agregar </button>
+                    </div>
+                </div>
+
+                @*Tabla----*@
+                <div class="container">
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Descripcion</th>
+                                <th>Costo</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in paquete.Productos)
+                            {
+                                <tr>
+                                    <td>@item.Descripcion</td>
+                                    <td>@item.Costo</td>
+                                    <td>@item.Precio</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-file" /> Nuevo
+                </button>
+                <button type="submit" class="btn btn-lg btn-success"><i class="oi oi-document" /> Guardar </button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />
+                    Eliminar </button>
+            </div>
+        </div>
+    </div>
+
 </EditForm>
 
 @code {
@@ -14,6 +101,8 @@
     public int PaqueteId { get; set; }
 
     public Paquete paquete { get; set; } = new Paquete();
+
+    public Productos productos { get; set; } = new Productos();
 
 
     protected override void OnInitialized()
@@ -74,5 +163,12 @@
         {
             return;
         }
+    }
+
+
+    void AgregarDetalle()
+    {
+        paquete.Productos.Add(this.productos);
+        productos = new Productos();
     }
 }

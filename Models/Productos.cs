@@ -15,4 +15,6 @@ public class Productos{
 
     [Required(ErrorMessage = "La existencia es requerida")]
     public int Existencia { get; set; }
+
+    public int PaqueteId { get; set; }
 }
