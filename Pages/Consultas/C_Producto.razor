@@ -1,0 +1,89 @@
+@page "/consultaProducto"
+
+<PageTitle>Consulta producto</PageTitle>
+
+@inject ProductosBLL productoBLL
+
+<EditForm Model="productos">
+    <div class="card">
+        <div class="card-header">
+            <h1>Consulta de productos</h1>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                    <div class="flex-fill mx-2">
+                        <label>Criterio</label>
+                        <input type="text" class="form-control" @bind="Criterio"/>
+                    </div>
+
+                <div class="col-2">
+                    <label class="form-label">Filtro</label>
+                    <select class="form-control" @bind="Filtro">
+                        <option value="1">ProductoId</option>
+                        <option value="2">Descripcion</option>
+                        <option value="3">Costo</option>
+                        <option value="4">Precio</option>
+                        <option value="5">Existencia</option>
+                        <option value="7">Todos</option>
+                    </select>
+                </div>
+
+                <div class="col-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">
+                        <i class="oi oi-magnifying-glass" />Buscar</button>
+                </div>
+
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ProductoId</th>
+                    <th>Descripcion</th>
+                    <th>Costo</th>
+                    <th>Precio</th>
+                    <th>Existencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in productos)
+                {
+                    <tr>
+                        <td>@item.ProductoId</td>
+                        <td>@item.Descripcion</td>
+                        <td>@item.Costo</td>
+                        <td>@item.Precio</td>
+                        <td>@item.Existencia</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@code {
+
+    public string Filtro { get; set; } = "";
+    public string Criterio { get; set; } = "";
+    public List<Productos> productos { get; set; } = new List<Productos>();
+
+    protected override void OnInitialized()
+    {
+        Buscar();
+    }
+
+    public void Buscar()
+    {
+        productos = Filtro switch
+        {
+            "1" => productoBLL.GetList(o => o.ProductoId.ToString().Contains(Criterio)),
+            "2" => productoBLL.GetList(o => o.Descripcion!.Contains(Criterio)),
+            "3" => productoBLL.GetList(o => o.Costo.ToString().Contains(Criterio)),
+            "4" => productoBLL.GetList(o => o.Precio.ToString().Contains(Criterio)),
+            "5" => productoBLL.GetList(o => o.Existencia.ToString().Contains(Criterio)),
+            _ => productoBLL.GetList(o => true),
+        };
+    }
+}

@@ -1,10 +1,11 @@
 @page "/paquete"
 @page "/paquete/{paqueteId:int}"
 
-<PageTitle>Productos</PageTitle>
+<PageTitle>Paquete</PageTitle>
 
 @inject PaqueteBLL paqueteBLL
-@inject ProductosBLL ProductosBLL
+@inject ProductosBLL productoBLL
+@inject NotificationService notificationService
 
 <EditForm Model="paquete" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -22,11 +23,11 @@
                         class="oi oi-magnifying-glass" /> Buscar</button>
             </div>
 
-            @*NombreCliente*@
+            @*Descripcion*@
             <div class="form-group">
-                <label>NombreCliente: </label><br>
-                <InputText @bind-Value="paquete.NombreCliente" class="form-control" />
-                <ValidationMessage For="@(() => paquete.NombreCliente)" />
+                <label>Descripcion: </label><br>
+                <InputText @bind-Value="paquete.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => paquete.Descripcion)" />
             </div>
 
             @*Fecha*@
@@ -37,18 +38,28 @@
             </div>
 
 
-
             @*--- Pago detalle ---*@
             <div class="card">
                 <div class="card-header">
                     <h1>Detalle</h1>
                 </div>
 
-                @*Existencia*@
+                @*ProductoId*@
                 <div class="form-group">
-                    <label>Existencia: </label><br>
-                    <InputNumber @bind-Value="productos.Existencia" class="form-control" />
-                    <ValidationMessage For="@(() => productos.Existencia)" />
+                    <label>ProductoId: </label><br>
+                    <InputSelect class="form-select" @bind-Value="detalle.ProductoId">
+                        @foreach (Productos item in productoBLL.GetList(o => true))
+                        {
+                            <option value="@item.ProductoId">@item.Descripcion</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                @*Cantidad*@
+                <div class="form-group">
+                    <label>Cantidad: </label><br>
+                    <InputNumber @bind-Value="detalle.CantidadPaquete" class="form-control" />
+                    <ValidationMessage For="@(() => detalle.CantidadPaquete)" />
                 </div>
 
                 @*Boton*@
@@ -59,23 +70,28 @@
                     </div>
                 </div>
 
-                @*Tabla----*@
+                @*Tabla*@
                 <div class="container">
                     <table class="table table-hover">
                         <thead class="thead-dark">
                             <tr>
+                                <th>ProductoId</th>
                                 <th>Descripcion</th>
-                                <th>Costo</th>
-                                <th>Precio</th>
+                                <th>CantidadPaquetes</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in paquete.Productos)
+                            @foreach (var item in paquete.DetallePaquetes)
                             {
                                 <tr>
-                                    <td>@item.Descripcion</td>
-                                    <td>@item.Costo</td>
-                                    <td>@item.Precio</td>
+                                    <td>@item.ProductoId</td>
+                                    <td>@productoBLL.Buscar(item.ProductoId).Descripcion</td>
+                                    <td>@item.CantidadPaquete</td>
+                                    <td> <button class="btn btn-danger mr-2"
+                                    onclick=@(() => EliminarDetalle(detalle.DetallePaqueteId))> 
+                                    <i class="oi oi-trash"></i>
+                                    </button>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -94,15 +110,18 @@
         </div>
     </div>
 
+
 </EditForm>
 
 @code {
     [Parameter]
     public int PaqueteId { get; set; }
-
     public Paquete paquete { get; set; } = new Paquete();
 
-    public Productos productos { get; set; } = new Productos();
+    public Productos producto { get; set; } = new Productos();
+    public DetallePaquetes detalle { get; set; } = new DetallePaquetes();
+
+    public double total { get; set; } = 0;
 
 
     protected override void OnInitialized()
@@ -122,7 +141,7 @@
 
     bool Validar()
     {
-        if (!String.IsNullOrEmpty(paquete.NombreCliente))
+        if (!String.IsNullOrEmpty(paquete.Descripcion))
         {
             return true;
         }
@@ -137,6 +156,13 @@
 
         if (paqueteBLL.Guardar(this.paquete))
         {
+            ShowNotification(
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Se ha guardado con exito."
+                }
+            );
             this.Nuevo();
         }
     }
@@ -155,9 +181,41 @@
 
     public void Eliminar()
     {
+        if (paquete.Descripcion == null && paquete.Fecha == null)
+        {
+            return;
+        }
+
         if (paqueteBLL.Eliminar(paquete.PaqueteId))
         {
+            ShowNotification(
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Info,
+                    Summary = "Se ha eliminado con exito."
+                }
+            );
             Nuevo();
+        }
+        else
+        {
+            ShowNotification(
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "No hay elemento para borrar."
+                }
+            );
+            return;
+        }
+    }
+
+    void AgregarDetalle()
+    {
+        if (detalle.CantidadPaquete > 0 && detalle?.ProductoId != null)
+        {
+            paquete.DetallePaquetes.Add(this.detalle);
+            detalle = new DetallePaquetes();
         }
         else
         {
@@ -165,10 +223,23 @@
         }
     }
 
-
-    void AgregarDetalle()
+    void EliminarDetalle(int detalleId)
     {
-        paquete.Productos.Add(this.productos);
-        productos = new Productos();
+        if(paquete.DetallePaquetes!=null && detalleId>0 ){
+            paquete.DetallePaquetes.RemoveAll(o => o.DetallePaqueteId == detalleId );
+            ShowNotification(
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Info,
+                    Summary = "Se ha eliminado con exito."
+                }
+            );
+        }
+    }
+
+    void ShowNotification(NotificationMessage message)
+    {
+        notificationService.Notify(message);
+
     }
 }

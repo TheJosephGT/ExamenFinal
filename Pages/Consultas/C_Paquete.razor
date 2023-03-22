@@ -1,0 +1,81 @@
+@page "/consultaPaquete"
+
+<PageTitle>Consulta paquete</PageTitle>
+
+@inject PaqueteBLL paqueteBLL
+
+<EditForm Model="paquete">
+    <div class="card">
+        <div class="card-header">
+            <h1>Consulta de productos</h1>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                    <div class="flex-fill mx-2">
+                        <label>Criterio</label>
+                        <input type="text" class="form-control" @bind="Criterio"/>
+                    </div>
+
+                <div class="col-2">
+                    <label class="form-label">Filtro</label>
+                    <select class="form-control" @bind="Filtro">
+                        <option value="1">PaqueteId</option>
+                        <option value="2">Descripcion</option>
+                        <option value="3">Fecha</option>
+                        <option value="4">Todos</option>
+                    </select>
+                </div>
+
+                <div class="col-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">
+                        <i class="oi oi-magnifying-glass" />Buscar</button>
+                </div>
+
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>PaqueteId</th>
+                    <th>Descripcion</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in paquete)
+                {
+                    <tr>
+                        <td>@item.PaqueteId</td>
+                        <td>@item.Descripcion</td>
+                        <td>@item.Fecha</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@code {
+
+    public string Filtro { get; set; } = "";
+    public string Criterio { get; set; } = "";
+    public List<Paquete> paquete { get; set; } = new List<Paquete>();
+
+    protected override void OnInitialized()
+    {
+        Buscar();
+    }
+
+    public void Buscar()
+    {
+        paquete = Filtro switch
+        {
+            "1" => paqueteBLL.GetList(o => o.PaqueteId.ToString().Contains(Criterio)),
+            "2" => paqueteBLL.GetList(o => o.Descripcion!.Contains(Criterio)),
+            "3" => paqueteBLL.GetList(o => o.Fecha.ToString().Contains(Criterio)),
+            _ => paqueteBLL.GetList(o => true),
+        };
+    }
+}

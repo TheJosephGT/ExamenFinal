@@ -16,20 +16,16 @@ public class PaqueteBLL
 
     private bool Insertar(Paquete paquete)
     {
+        InsertarDetalle(paquete);
         _contexto.Paquete.Add(paquete);
         return _contexto.SaveChanges() > 0;
     }
 
     private bool Modificar(Paquete paquete)
     {
-        var existe = _contexto.Paquete.Find(paquete.PaqueteId);
-        if (existe != null)
-        {
-            _contexto.Entry(existe).CurrentValues.SetValues(paquete);
-            return _contexto.SaveChanges() > 0;
-        }
-
-        return false;
+        ModificarDetalle(paquete);
+        _contexto.Entry(paquete).State = EntityState.Modified;
+        return _contexto.SaveChanges() > 0;
     }
 
     public bool Guardar(Paquete paquete)
@@ -59,13 +55,15 @@ public class PaqueteBLL
 
     void InsertarDetalle(Paquete paquete)
     {
-        if (paquete.Productos != null)
+        if (paquete.DetallePaquetes != null)
         {
-            foreach (var item in paquete.Productos)
+            foreach (var item in paquete.DetallePaquetes)
             {
                 var producto = _contexto.Productos.Find(item.ProductoId);
+
                 if (producto != null)
                 {
+                    producto.Existencia -= item.CantidadPaquete;
                     _contexto.Entry(producto).State = EntityState.Modified;
                     _contexto.SaveChanges();
                 }
@@ -75,16 +73,18 @@ public class PaqueteBLL
 
     void ModificarDetalle(Paquete paquete)
     {
-        var productoActual = _contexto.Productos.AsNoTracking().Where(d => d.ProductoId == paquete.ProductoId).ToList();
-        foreach (var item in paquete.Productos)
+        var detallesActuales = _contexto.DetallePaquetes.AsNoTracking().Where(d => d.PaqueteId == paquete.PaqueteId).ToList();
+        foreach (var item in paquete.DetallePaquetes)
         {
             var producto = _contexto.Productos.Find(item.ProductoId);
             if (producto != null)
             {
                 _contexto.Entry(producto).State = EntityState.Modified;
                 _contexto.SaveChanges();
+
             }
         }
+
     }
 
     public List<Paquete> GetList(Expression<Func<Paquete, bool>> criterio)

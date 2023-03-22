@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
-using Parcial2_Joseph.Data;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +13,11 @@ builder.Services.AddDbContext<Contexto>(options =>options.UseSqlite(ConStr));
 
 builder.Services.AddScoped<ProductosBLL>();
 builder.Services.AddScoped<PaqueteBLL>();
+
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<ContextMenuService>();
 
 var app = builder.Build();
 
