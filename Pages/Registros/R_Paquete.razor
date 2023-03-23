@@ -89,11 +89,6 @@
                                     <td>@item.ProductoId</td>
                                     <td>@productoBLL.Buscar(item.ProductoId).Descripcion</td>
                                     <td>@item.CantidadPaquete</td>
-                                    <td> <button class="btn btn-danger mr-2" onclick=@(() =>
-                                        EliminarDetalle(item.DetallePaqueteId))>
-                                            <i class="oi oi-trash"></i>
-                                        </button>
-                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -119,235 +114,118 @@
     [Parameter]
 
     public int PaqueteId { get; set; }
-
     public Paquete paquete { get; set; } = new Paquete();
-
-
-
     public Productos producto { get; set; } = new Productos();
-
     public DetallePaquetes detalle { get; set; } = new DetallePaquetes();
 
-
-
-    public double total { get; set; } = 0;
-
-
-
-
-
     protected override void OnInitialized()
-
     {
-
         if (PaqueteId > 0)
-
         {
-
-
-
             this.paquete.PaqueteId = PaqueteId;
-
             this.Buscar();
-
         }
-
     }
-
-
 
     public void Nuevo()
-
     {
-
         paquete = new Paquete();
-
     }
-
-
 
     bool Validar()
-
     {
-
         if (!String.IsNullOrEmpty(paquete.Descripcion))
-
         {
-
             return true;
-
         }
-
-
-
         return false;
-
     }
-
-
-
-
 
     void Guardar()
-
     {
+        if(!Validar()){return;}
 
-        System.Console.WriteLine("holaaaa estoy validando");
-
-        paqueteBLL.Guardar(this.paquete);
-
-        System.Console.WriteLine("ya guarde");
-
-        this.Nuevo();
-
+        if(paqueteBLL.Guardar(this.paquete)){
+            ShowNotification(
+                new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Se ha guardado con exito."
+                    }
+                );
+            this.Nuevo();
+        }
     }
-
-
 
     private void Buscar()
-
     {
-
         if (paquete.PaqueteId > 0)
-
         {
-
             var encontrado = paqueteBLL.Buscar(paquete.PaqueteId);
-
-
-
             if (encontrado != null)
-
                 this.paquete = encontrado;
-
-
-
         }
-
     }
-
-
 
     public void Eliminar()
-
     {
-
         if (paquete.PaqueteId > 0)
-
         {
-
             if (paqueteBLL.Eliminar(paquete.PaqueteId))
-
             {
-
                 ShowNotification(
-
                 new NotificationMessage
-
                     {
-
                         Severity = NotificationSeverity.Info,
-
                         Summary = "Se ha eliminado con exito."
-
                     }
-
                 );
-
                 Nuevo();
-
             }
-
         }
-
         else
-
         {
-
             ShowNotification(
-
             new NotificationMessage
-
                 {
-
                     Severity = NotificationSeverity.Error,
-
                     Summary = "No hay elemento para borrar."
-
                 }
-
             );
-
             return;
-
         }
-
     }
-
-
 
     void AgregarDetalle()
-
     {
-
         if (detalle.CantidadPaquete > 0 && detalle?.ProductoId != null)
-
         {
-
             paquete.DetallePaquetes.Add(this.detalle);
-
             detalle = new DetallePaquetes();
-
         }
-
         else
-
         {
-
             return;
-
         }
-
     }
-
-
 
     void EliminarDetalle(int detalleId)
-
     {
-
         if (paquete.DetallePaquetes != null && detalleId > 0)
         {
-
             paquete.DetallePaquetes.RemoveAll(o => o.DetallePaqueteId == detalleId);
-
             ShowNotification(
-
             new NotificationMessage
-
                 {
-
                     Severity = NotificationSeverity.Info,
-
                     Summary = "Se ha eliminado con exito."
-
                 }
-
             );
-
         }
-
     }
 
-
-
     void ShowNotification(NotificationMessage message)
-
     {
-
         notificationService.Notify(message);
-
-
-
     }
 }

@@ -1,22 +1,18 @@
 @page "/consultaProducto"
+@inject ProductosBLL productosBLL;
 
-<PageTitle>Consulta producto</PageTitle>
-
-@inject ProductosBLL productoBLL
-
-<EditForm Model="productos">
+<EditForm Model="lista">
+    <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header">
             <h1>Consulta de productos</h1>
         </div>
-
-        <div class="card-body">
-            <div class="row">
-                    <div class="flex-fill mx-2">
-                        <label>Criterio</label>
-                        <input type="text" class="form-control" @bind="Criterio"/>
-                    </div>
-
+            <div class="card-body">
+                <div class="row">
+                <div class="col-2">
+                    <label>Criterio</label>
+                    <input type="text" class="form-control" @bind="Criterio" />
+                </div>
                 <div class="col-2">
                     <label class="form-label">Filtro</label>
                     <select class="form-control" @bind="Filtro">
@@ -25,18 +21,16 @@
                         <option value="3">Costo</option>
                         <option value="4">Precio</option>
                         <option value="5">Existencia</option>
-                        <option value="7">Todos</option>
+                        <option value="6">Todos</option>
                     </select>
                 </div>
-
                 <div class="col-3 d-flex align-items-end">
-                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">
-                        <i class="oi oi-magnifying-glass" />Buscar</button>
+                    <button class="btn btn-group-sm" type="button" @onclick="Buscar">
+                        <i class="oi oi-magnifying-glass" /> Buscar
+                    </button>
                 </div>
-
             </div>
         </div>
-
         <table class="table">
             <thead>
                 <tr>
@@ -48,7 +42,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in productos)
+                @foreach (var item in lista)
                 {
                     <tr>
                         <td>@item.ProductoId</td>
@@ -63,11 +57,11 @@
     </div>
 </EditForm>
 
-@code {
-
-    public string Filtro { get; set; } = "";
+@code
+{
     public string Criterio { get; set; } = "";
-    public List<Productos> productos { get; set; } = new List<Productos>();
+    public string Filtro { get; set; } = "";
+    public List<Productos> lista { get; set; } = new List<Productos>();
 
     protected override void OnInitialized()
     {
@@ -76,14 +70,20 @@
 
     public void Buscar()
     {
-        productos = Filtro switch
+        switch (Filtro)
         {
-            "1" => productoBLL.GetList(o => o.ProductoId.ToString().Contains(Criterio)),
-            "2" => productoBLL.GetList(o => o.Descripcion!.Contains(Criterio)),
-            "3" => productoBLL.GetList(o => o.Costo.ToString().Contains(Criterio)),
-            "4" => productoBLL.GetList(o => o.Precio.ToString().Contains(Criterio)),
-            "5" => productoBLL.GetList(o => o.Existencia.ToString().Contains(Criterio)),
-            _ => productoBLL.GetList(o => true),
-        };
+            case "1":
+                lista = productosBLL.GetList(o => o.ProductoId.ToString() == Criterio.ToLower()); break;
+            case "2":
+                lista = productosBLL.GetList(o => o.Descripcion!.ToLower() == Criterio.ToLower()); break;
+            case "3":
+                lista = productosBLL.GetList(o => o.Costo!.ToString() == Criterio.ToLower()); break;
+            case "4":
+                lista = productosBLL.GetList(o => o.Precio!.ToString() == Criterio.ToLower()); break;
+            case "5":
+                lista = productosBLL.GetList(o => o.Existencia!.ToString() == Criterio.ToLower()); break;
+            default:
+                lista = productosBLL.GetList(o => true); break;
+        }
     }
 }

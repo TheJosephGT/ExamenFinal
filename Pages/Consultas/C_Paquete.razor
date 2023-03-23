@@ -4,19 +4,18 @@
 
 @inject PaqueteBLL paqueteBLL
 
-<EditForm Model="paquete">
+<EditForm Model="lista">
     <div class="card">
         <div class="card-header">
-            <h1>Consulta de productos</h1>
+            <h1>Consulta de paquetes</h1>
         </div>
 
         <div class="card-body">
             <div class="row">
-                    <div class="flex-fill mx-2">
+                    <div class="col-2">
                         <label>Criterio</label>
                         <input type="text" class="form-control" @bind="Criterio"/>
                     </div>
-
                 <div class="col-2">
                     <label class="form-label">Filtro</label>
                     <select class="form-control" @bind="Filtro">
@@ -26,15 +25,14 @@
                         <option value="4">Todos</option>
                     </select>
                 </div>
-
                 <div class="col-3 d-flex align-items-end">
-                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar">
-                        <i class="oi oi-magnifying-glass" />Buscar</button>
+                        <button class="btn btn-group-sm" type="button" @onclick="Buscar">
+                        <i class="oi oi-magnifying-glass" /> Buscar
+                    </button>
                 </div>
 
             </div>
         </div>
-
         <table class="table">
             <thead>
                 <tr>
@@ -44,7 +42,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in paquete)
+                @foreach (var item in lista)
                 {
                     <tr>
                         <td>@item.PaqueteId</td>
@@ -61,7 +59,7 @@
 
     public string Filtro { get; set; } = "";
     public string Criterio { get; set; } = "";
-    public List<Paquete> paquete { get; set; } = new List<Paquete>();
+    public List<Paquete> lista { get; set; } = new List<Paquete>();
 
     protected override void OnInitialized()
     {
@@ -70,12 +68,16 @@
 
     public void Buscar()
     {
-        paquete = Filtro switch
+        switch (Filtro)
         {
-            "1" => paqueteBLL.GetList(o => o.PaqueteId.ToString().Contains(Criterio)),
-            "2" => paqueteBLL.GetList(o => o.Descripcion!.Contains(Criterio)),
-            "3" => paqueteBLL.GetList(o => o.Fecha.ToString().Contains(Criterio)),
-            _ => paqueteBLL.GetList(o => true),
-        };
+            case "1":
+                lista = paqueteBLL.GetList(o => o.PaqueteId.ToString() == Criterio.ToLower());break;
+            case "2":
+                lista = paqueteBLL.GetList(o => o.Descripcion!.ToLower() == Criterio.ToLower());break;
+            case "3":
+                lista = paqueteBLL.GetList(o => o.Fecha.ToString().Contains(Criterio));break;
+            default:
+                lista = paqueteBLL.GetList(o => true); break;
+        }
     }
 }
