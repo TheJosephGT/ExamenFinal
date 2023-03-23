@@ -20,9 +20,7 @@ namespace Parcial2_Joseph.Migrations
                     PaqueteId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Fecha = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
-                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProductoId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,18 +47,18 @@ namespace Parcial2_Joseph.Migrations
                 name: "DetallePaquetes",
                 columns: table => new
                 {
-                    DetallePaqueteId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DetallePaqueteId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     PaqueteId = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Descripcion = table.Column<string>(type: "TEXT", nullable: true),
                     CantidadPaquete = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DetallePaquetes", x => x.DetallePaqueteId);
                     table.ForeignKey(
-                        name: "FK_DetallePaquetes_Paquete_DetallePaqueteId",
-                        column: x => x.DetallePaqueteId,
+                        name: "FK_DetallePaquetes_Paquete_PaqueteId",
+                        column: x => x.PaqueteId,
                         principalTable: "Paquete",
                         principalColumn: "PaqueteId",
                         onDelete: ReferentialAction.Cascade);
@@ -77,6 +75,11 @@ namespace Parcial2_Joseph.Migrations
                     { 4, 350.0, "Pasas", 30, 100.0 },
                     { 5, 250.0, "Arándanos", 30, 10.0 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DetallePaquetes_PaqueteId",
+                table: "DetallePaquetes",
+                column: "PaqueteId");
         }
 
         /// <inheritdoc />

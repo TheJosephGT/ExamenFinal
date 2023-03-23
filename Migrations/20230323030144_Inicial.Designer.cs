@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Parcial2_Joseph.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20230322031010_Inicial")]
+    [Migration("20230323030144_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -22,13 +22,11 @@ namespace Parcial2_Joseph.Migrations
             modelBuilder.Entity("DetallePaquetes", b =>
                 {
                     b.Property<int>("DetallePaqueteId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CantidadPaquete")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("PaqueteId")
                         .HasColumnType("INTEGER");
@@ -37,6 +35,8 @@ namespace Parcial2_Joseph.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("DetallePaqueteId");
+
+                    b.HasIndex("PaqueteId");
 
                     b.ToTable("DetallePaquetes");
                 });
@@ -47,18 +47,12 @@ namespace Parcial2_Joseph.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("PaqueteId");
 
@@ -135,7 +129,7 @@ namespace Parcial2_Joseph.Migrations
                 {
                     b.HasOne("Paquete", null)
                         .WithMany("DetallePaquetes")
-                        .HasForeignKey("DetallePaqueteId")
+                        .HasForeignKey("PaqueteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -38,7 +38,7 @@ public class PaqueteBLL
 
     public Paquete? Buscar(int paqueteId)
     {
-        return _contexto.Paquete.Where(o => o.PaqueteId == paqueteId).AsNoTracking().SingleOrDefault();
+        return _contexto.Paquete.Include(o => o.DetallePaquetes).Where(o => o.PaqueteId == paqueteId).SingleOrDefault();
     }
 
     public bool Eliminar(int paqueteId)
@@ -47,6 +47,17 @@ public class PaqueteBLL
 
         if (eliminado != null)
         {
+            foreach (var item in eliminado.DetallePaquetes)
+            {
+                var producto = _contexto.Productos.Find(item.ProductoId);
+                if (producto != null)
+                {
+                    producto.Existencia += item.CantidadPaquete;
+                    _contexto.Entry(producto).State = EntityState.Modified;
+                    _contexto.SaveChanges();
+                }
+            }
+            _contexto.RemoveRange(eliminado.DetallePaquetes);
             _contexto.Entry(eliminado).State = EntityState.Deleted;
             return _contexto.SaveChanges() > 0;
         }
@@ -65,20 +76,21 @@ public class PaqueteBLL
                 {
                     producto.Existencia -= item.CantidadPaquete;
                     _contexto.Entry(producto).State = EntityState.Modified;
-                    _contexto.SaveChanges();
+                   
                 }
             }
+            _contexto.SaveChanges();
         }
     }
 
     void ModificarDetalle(Paquete paquete)
     {
-        var detallesActuales = _contexto.DetallePaquetes.AsNoTracking().Where(d => d.PaqueteId == paquete.PaqueteId).ToList();
         foreach (var item in paquete.DetallePaquetes)
         {
             var producto = _contexto.Productos.Find(item.ProductoId);
             if (producto != null)
             {
+                producto.Existencia -= item.CantidadPaquete;
                 _contexto.Entry(producto).State = EntityState.Modified;
                 _contexto.SaveChanges();
 

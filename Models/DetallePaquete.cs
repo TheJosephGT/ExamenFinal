@@ -6,6 +6,5 @@ public class DetallePaquetes{
     public int DetallePaqueteId { get; set; }
     public int PaqueteId { get; set; }
     public int ProductoId { get; set; }
-    public string? Descripcion { get; set; }
     public int CantidadPaquete { get; set; }
 }

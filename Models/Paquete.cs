@@ -9,11 +9,7 @@ public class Paquete{
     public DateOnly Fecha { get; set; }
     [Required(ErrorMessage ="El descripcion es requerida.")]
     public string? Descripcion { get; set; }
-    [Required(ErrorMessage ="La cantidad es requerida.")]
-    public int Cantidad { get; set; }
-    [Required(ErrorMessage ="La ProductoId es requerida.")]
-    public int ProductoId { get; set;}
     
-    [ForeignKey("DetallePaqueteId")]
+    [ForeignKey("PaqueteId")]
     public virtual List<DetallePaquetes> DetallePaquetes {get; set;} = new List<DetallePaquetes>();
 }
