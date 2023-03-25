@@ -89,6 +89,11 @@
                                     <td>@item.ProductoId</td>
                                     <td>@productoBLL.Buscar(item.ProductoId).Descripcion</td>
                                     <td>@item.CantidadPaquete</td>
+                                    <td> <button class="btn btn-danger mr-2" onclick=@(() =>
+                                        EliminarDetalle(item.DetallePaqueteId))>
+                                            <i class="oi oi-trash"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -143,16 +148,17 @@
 
     void Guardar()
     {
-        if(!Validar()){return;}
+        if (!Validar()) { return; }
 
-        if(paqueteBLL.Guardar(this.paquete)){
+        if (paqueteBLL.Guardar(this.paquete))
+        {
             ShowNotification(
-                new NotificationMessage
-                    {
-                        Severity = NotificationSeverity.Success,
-                        Summary = "Se ha guardado con exito."
-                    }
-                );
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Se ha guardado con exito."
+                }
+            );
             this.Nuevo();
         }
     }
