@@ -44,11 +44,17 @@ namespace Parcial2_Joseph.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("Fecha")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Producido")
                         .HasColumnType("TEXT");
 
                     b.HasKey("PaqueteId");

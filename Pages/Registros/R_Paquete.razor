@@ -23,9 +23,9 @@
                         class="oi oi-magnifying-glass" /> Buscar</button>
             </div>
 
-            @*Descripcion*@
+            @*Concepto*@
             <div class="form-group">
-                <label>Descripcion: </label><br>
+                <label>Concepto: </label><br>
                 <InputText @bind-Value="paquete.Descripcion" class="form-control" />
                 <ValidationMessage For="@(() => paquete.Descripcion)" />
             </div>
@@ -99,7 +99,30 @@
                         </tbody>
                     </table>
                 </div>
+                <label>Total: @paquete.Cantidad</label>
             </div>
+
+            @*--- Producido ---*@
+            <div class="card">
+                <div class="card-header">
+                    <h1>Producido</h1>
+                </div>
+
+                @*Producido*@
+                <div class="form-group">
+                    <label>Producido: </label><br>
+                    <InputText @bind-Value="paquete.Producido" class="form-control" />
+                    <ValidationMessage For="@(() => paquete.Producido)" />
+                </div>
+
+                @*Producido*@
+                <div class="form-group">
+                    <label>Cantidad: </label><br>
+                    <InputNumber @bind-Value="paquete.Cantidad" class="form-control" />
+                    <ValidationMessage For="@(() => paquete.Cantidad)" />
+                </div>
+            </div>
+
         </div>
         <div class="card-footer">
             <div class="form-group text-center" display: inline-block>
@@ -207,6 +230,7 @@
         if (detalle.CantidadPaquete > 0 && detalle?.ProductoId != null)
         {
             paquete.DetallePaquetes.Add(this.detalle);
+            paquete.Cantidad += detalle.CantidadPaquete;
             detalle = new DetallePaquetes();
         }
         else

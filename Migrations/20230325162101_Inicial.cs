@@ -20,7 +20,9 @@ namespace Parcial2_Joseph.Migrations
                     PaqueteId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Fecha = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    Descripcion = table.Column<string>(type: "TEXT", nullable: false)
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
+                    Producido = table.Column<string>(type: "TEXT", nullable: true),
+                    Cantidad = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

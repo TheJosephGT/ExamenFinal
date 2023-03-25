@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 public class PaqueteBLL
 {
     private Contexto _contexto;
+    private ProductosBLL productosBLL;
 
     public PaqueteBLL(Contexto contexto)
     {
@@ -21,7 +22,7 @@ public class PaqueteBLL
         return _contexto.SaveChanges() > 0;
     }
 
-       private bool Modificar(Paquete paquete)
+    private bool Modificar(Paquete paquete)
     {
         ModificarDetalle(paquete);
         _contexto.Entry(paquete).State = EntityState.Modified;
@@ -76,7 +77,6 @@ public class PaqueteBLL
                 {
                     producto.Existencia -= item.CantidadPaquete;
                     _contexto.Entry(producto).State = EntityState.Modified;
-
                 }
             }
             _contexto.SaveChanges();
@@ -85,23 +85,20 @@ public class PaqueteBLL
 
     void ModificarDetalle(Paquete paquete)
     {
-        var paqueteAnterior = _contexto.Paquete
-             .Where(o => o.PaqueteId== paquete.PaqueteId)
-             .Include(o =>  o.DetallePaquetes)
-             .AsNoTracking()
-             .SingleOrDefault();
-        if(paqueteAnterior !=null){
-             foreach (var item in paqueteAnterior.DetallePaquetes)
+        var paqueteAnterior = _contexto.Paquete.Where(o => o.PaqueteId == paquete.PaqueteId).Include(o => o.DetallePaquetes).AsNoTracking().SingleOrDefault();
+        if (paqueteAnterior != null)
         {
-            var producto = _contexto.Productos.Find(item.ProductoId);
-            if (producto != null)
+            foreach (var item in paqueteAnterior.DetallePaquetes)
             {
-                producto.Existencia += item.CantidadPaquete;
-                _contexto.Entry(producto).State = EntityState.Modified;
-                _contexto.SaveChanges();
+                var producto = _contexto.Productos.Find(item.ProductoId);
+                if (producto != null)
+                {
+                    producto.Existencia += item.CantidadPaquete;
+                    _contexto.Entry(producto).State = EntityState.Modified;
+                    _contexto.SaveChanges();
 
+                }
             }
-        }
 
         }
         foreach (var item in paquete.DetallePaquetes)
