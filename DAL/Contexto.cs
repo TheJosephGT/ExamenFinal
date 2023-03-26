@@ -12,7 +12,7 @@ public class Contexto : DbContext{
                 Descripcion = "Mani",
                 Costo = 300,
                 Precio = 10,
-                Existencia = 30
+                Existencia = 50
             }
         );
         modelBuilder.Entity<Productos>().HasData(
@@ -21,7 +21,7 @@ public class Contexto : DbContext{
                 Descripcion = "Pistachos",
                 Costo = 300,
                 Precio = 28,
-                Existencia = 30
+                Existencia = 50
             }
         );
         modelBuilder.Entity<Productos>().HasData(
@@ -30,7 +30,7 @@ public class Contexto : DbContext{
                 Descripcion = "Ciruelas",
                 Costo = 250,
                 Precio = 50,
-                Existencia = 30
+                Existencia = 50
             }
         );
         modelBuilder.Entity<Productos>().HasData(
@@ -39,7 +39,7 @@ public class Contexto : DbContext{
                 Descripcion = "Pasas",
                 Costo = 350,
                 Precio = 100,
-                Existencia = 30
+                Existencia = 50
             }
         );
         modelBuilder.Entity<Productos>().HasData(
@@ -48,7 +48,7 @@ public class Contexto : DbContext{
                 Descripcion = "Arándanos",
                 Costo = 250,
                 Precio = 10,
-                Existencia = 30
+                Existencia = 50
             }
         );
     }

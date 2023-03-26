@@ -71,11 +71,11 @@ namespace Parcial2_Joseph.Migrations
                 columns: new[] { "ProductoId", "Costo", "Descripcion", "Existencia", "Precio" },
                 values: new object[,]
                 {
-                    { 1, 300.0, "Mani", 30, 10.0 },
-                    { 2, 300.0, "Pistachos", 30, 28.0 },
-                    { 3, 250.0, "Ciruelas", 30, 50.0 },
-                    { 4, 350.0, "Pasas", 30, 100.0 },
-                    { 5, 250.0, "Arándanos", 30, 10.0 }
+                    { 1, 300.0, "Mani", 50, 10.0 },
+                    { 2, 300.0, "Pistachos", 50, 28.0 },
+                    { 3, 250.0, "Ciruelas", 50, 50.0 },
+                    { 4, 350.0, "Pasas", 50, 100.0 },
+                    { 5, 250.0, "Arándanos", 50, 10.0 }
                 });
 
             migrationBuilder.CreateIndex(

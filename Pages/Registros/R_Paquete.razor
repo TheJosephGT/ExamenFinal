@@ -224,18 +224,23 @@
             return;
         }
     }
-
     void AgregarDetalle()
     {
-        if (detalle.CantidadPaquete > 0 && detalle?.ProductoId != null)
+        var producto = productoBLL.Buscar(detalle.ProductoId);
+        if (detalle.CantidadPaquete <= producto?.Existencia)
         {
-            paquete.DetallePaquetes.Add(this.detalle);
-            paquete.Cantidad += detalle.CantidadPaquete;
-            detalle = new DetallePaquetes();
+            this.paquete.DetallePaquetes.Add(this.detalle);
+            this.detalle = new DetallePaquetes();
         }
         else
         {
-            return;
+            ShowNotification(
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "La cantidad solicitada excede la existencia."
+                }
+            );
         }
     }
 

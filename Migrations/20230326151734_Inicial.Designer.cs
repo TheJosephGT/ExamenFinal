@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Parcial2_Joseph.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20230325162101_Inicial")]
+    [Migration("20230326151734_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace Parcial2_Joseph.Migrations
                             ProductoId = 1,
                             Costo = 300.0,
                             Descripcion = "Mani",
-                            Existencia = 30,
+                            Existencia = 50,
                             Precio = 10.0
                         },
                         new
@@ -102,7 +102,7 @@ namespace Parcial2_Joseph.Migrations
                             ProductoId = 2,
                             Costo = 300.0,
                             Descripcion = "Pistachos",
-                            Existencia = 30,
+                            Existencia = 50,
                             Precio = 28.0
                         },
                         new
@@ -110,7 +110,7 @@ namespace Parcial2_Joseph.Migrations
                             ProductoId = 3,
                             Costo = 250.0,
                             Descripcion = "Ciruelas",
-                            Existencia = 30,
+                            Existencia = 50,
                             Precio = 50.0
                         },
                         new
@@ -118,7 +118,7 @@ namespace Parcial2_Joseph.Migrations
                             ProductoId = 4,
                             Costo = 350.0,
                             Descripcion = "Pasas",
-                            Existencia = 30,
+                            Existencia = 50,
                             Precio = 100.0
                         },
                         new
@@ -126,7 +126,7 @@ namespace Parcial2_Joseph.Migrations
                             ProductoId = 5,
                             Costo = 250.0,
                             Descripcion = "Arándanos",
-                            Existencia = 30,
+                            Existencia = 50,
                             Precio = 10.0
                         });
                 });
