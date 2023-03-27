@@ -1,0 +1,156 @@
+@page "/producto"
+@page "/producto/{productoId:int}"
+
+<PageTitle>Producto</PageTitle>
+
+@inject ProductosBLL productoBLL
+@inject NotificationService notificationService
+
+<EditForm Model="producto" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h1> Registo de productos</h1>
+        </div>
+
+        <div class="card-body">
+            @*ProductoId*@
+            <div class="form-group">
+                <label>ProductoId: </label><br>
+                <InputNumber @bind-Value="producto.ProductoId" class="form-control" /> <br>
+                <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i
+                        class="oi oi-magnifying-glass" /> Buscar</button>
+            </div>
+
+            @*Descripcion*@
+            <div class="form-group">
+                <label>Descripcion: </label><br>
+                <InputText @bind-Value="producto.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => producto.Descripcion)" />
+            </div>
+
+            @*Costo*@
+            <div class="form-group">
+                <label>Costo: </label><br>
+                <InputNumber @bind-Value="producto.Costo" class="form-control" />
+                <ValidationMessage For="@(() => producto.Costo)" />
+            </div>
+
+             @*Precio*@
+            <div class="form-group">
+                <label>Precio: </label><br>
+                <InputNumber @bind-Value="producto.Precio" class="form-control" />
+                <ValidationMessage For="@(() => producto.Precio)" />
+            </div>
+
+            @*Existencia*@
+            <div class="form-group">
+                <label>Existencia: </label><br>
+                <InputNumber @bind-Value="producto.Existencia" class="form-control" />
+                <ValidationMessage For="@(() => producto.Existencia)" />
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-file" /> Nuevo
+                </button>
+                <button class="btn btn-lg btn-success"><i class="oi oi-document" /> Guardar </button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />
+                    Eliminar </button>
+            </div>
+        </div>
+    </div>
+
+
+</EditForm>
+
+@code {
+    [Parameter]
+
+    public int ProductoId { get; set; }
+    public Productos producto { get; set; } = new Productos();
+
+    protected override void OnInitialized()
+    {
+        if (ProductoId > 0)
+        {
+            this.producto.ProductoId = ProductoId;
+            this.Buscar();
+        }
+    }
+
+    public void Nuevo()
+    {
+        producto = new Productos();
+    }
+
+    bool Validar()
+    {
+        if (!String.IsNullOrEmpty(producto.Descripcion))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void Guardar()
+    {
+        if (!Validar()) { return; }
+
+        if (productoBLL.Guardar(this.producto))
+        {
+            ShowNotification(
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Se ha guardado con exito."
+                }
+            );
+            this.Nuevo();
+        }
+    }
+
+    private void Buscar()
+    {
+        if (producto.ProductoId > 0)
+        {
+            var encontrado = productoBLL.Buscar(producto.ProductoId);
+            if (encontrado != null)
+                this.producto = encontrado;
+        }
+    }
+
+    public void Eliminar()
+    {
+        if (producto.ProductoId > 0)
+        {
+            if (productoBLL.Eliminar(producto.ProductoId))
+            {
+                ShowNotification(
+                new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Info,
+                        Summary = "Se ha eliminado con exito."
+                    }
+                );
+                Nuevo();
+            }
+        }
+        else
+        {
+            ShowNotification(
+            new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "No hay elemento para borrar."
+                }
+            );
+            return;
+        }
+    }
+
+    void ShowNotification(NotificationMessage message)
+    {
+        notificationService.Notify(message);
+    }
+}
