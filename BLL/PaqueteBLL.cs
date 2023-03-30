@@ -79,6 +79,13 @@ public class PaqueteBLL
                     _contexto.Entry(producto).State = EntityState.Modified;
                 }
             }
+
+             var pro = _contexto.Productos.Find(paquete.ProductoId);
+                    if(paquete.Cantidad != 0){
+                        pro.Existencia += paquete.Cantidad;
+                     _contexto.Entry(pro).State = EntityState.Modified;
+                    _contexto.SaveChanges();
+                    }
             _contexto.SaveChanges();
         }
     }
@@ -100,6 +107,14 @@ public class PaqueteBLL
                 }
             }
 
+            
+             var pro = _contexto.Productos.Find(paquete.ProductoId);
+                    if(paquete.Cantidad != 0){
+                        pro.Existencia += paquete.Cantidad;
+                     _contexto.Entry(pro).State = EntityState.Modified;
+                    _contexto.SaveChanges();
+                    }
+
         }
         foreach (var item in paquete.DetallePaquetes)
         {
@@ -112,6 +127,8 @@ public class PaqueteBLL
 
             }
         }
+
+
 
     }
 

@@ -108,11 +108,16 @@
                     <h1>Producido</h1>
                 </div>
 
-                @*Producido*@
+                @*ProductoId*@
                 <div class="form-group">
-                    <label>Producido: </label><br>
-                    <InputText @bind-Value="paquete.Producido" class="form-control" />
-                    <ValidationMessage For="@(() => paquete.Producido)" />
+                    <label>Producto: </label><br>
+                    <InputSelect class="form-select" @bind-Value="paquete.ProductoId">
+                        @foreach (Productos item in productoBLL.GetList(o => true))
+
+                        {
+                            <option value="@item.ProductoId">@item.Descripcion</option>
+                        }
+                    </InputSelect>
                 </div>
 
                 @*Producido*@

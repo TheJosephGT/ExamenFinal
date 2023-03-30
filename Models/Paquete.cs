@@ -9,7 +9,7 @@ public class Paquete{
     public DateOnly Fecha { get; set; }
     [Required(ErrorMessage ="El descripcion es requerida.")]
     public string? Descripcion { get; set; }
-    public string? Producido { get; set; }
+    public int ProductoId { get; set; }
     public int Cantidad {get; set;}
     
     [ForeignKey("PaqueteId")]

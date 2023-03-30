@@ -54,8 +54,8 @@ namespace Parcial2_Joseph.Migrations
                     b.Property<DateOnly>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Producido")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("PaqueteId");
 
