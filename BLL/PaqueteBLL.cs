@@ -44,11 +44,11 @@ public class PaqueteBLL
 
     public bool Eliminar(int paqueteId)
     {
-        var eliminado = _contexto.Paquete.Where(o => o.PaqueteId == paqueteId).SingleOrDefault();
+        var eliminar = _contexto.Paquete.Where(o => o.PaqueteId == paqueteId).SingleOrDefault();
 
-        if (eliminado != null)
+        if (eliminar != null)
         {
-            foreach (var item in eliminado.DetallePaquetes)
+            foreach (var item in eliminar.DetallePaquetes)
             {
                 var producto = _contexto.Productos.Find(item.ProductoId);
                 if (producto != null)
@@ -58,8 +58,17 @@ public class PaqueteBLL
                     _contexto.SaveChanges();
                 }
             }
-            _contexto.RemoveRange(eliminado.DetallePaquetes);
-            _contexto.Entry(eliminado).State = EntityState.Deleted;
+
+            var AumentarProducido = _contexto.Productos.Find(eliminar.ProductoId);
+            if (eliminar.Cantidad != 0 && AumentarProducido != null)
+            {
+                AumentarProducido.Existencia -= eliminar.Cantidad;
+                _contexto.Entry(AumentarProducido).State = EntityState.Modified;
+                _contexto.SaveChanges();
+            }
+
+            _contexto.RemoveRange(eliminar.DetallePaquetes);
+            _contexto.Entry(eliminar).State = EntityState.Deleted;
             return _contexto.SaveChanges() > 0;
         }
         return false;
@@ -79,13 +88,14 @@ public class PaqueteBLL
                     _contexto.Entry(producto).State = EntityState.Modified;
                 }
             }
+            _contexto.SaveChanges();
+        }
 
-             var pro = _contexto.Productos.Find(paquete.ProductoId);
-                    if(paquete.Cantidad != 0){
-                        pro.Existencia += paquete.Cantidad;
-                     _contexto.Entry(pro).State = EntityState.Modified;
-                    _contexto.SaveChanges();
-                    }
+        var AumentarProducido = _contexto.Productos.Find(paquete.ProductoId);
+        if (paquete.Cantidad != 0 && AumentarProducido != null)
+        {
+            AumentarProducido.Existencia += paquete.Cantidad;
+            _contexto.Entry(AumentarProducido).State = EntityState.Modified;
             _contexto.SaveChanges();
         }
     }
@@ -93,6 +103,15 @@ public class PaqueteBLL
     void ModificarDetalle(Paquete paquete)
     {
         var paqueteAnterior = _contexto.Paquete.Where(o => o.PaqueteId == paquete.PaqueteId).Include(o => o.DetallePaquetes).AsNoTracking().SingleOrDefault();
+
+        var AumentarProducido = _contexto.Productos.Find(paquete.ProductoId);
+        if (paquete.Cantidad != 0 && AumentarProducido != null)
+        {
+            AumentarProducido.Existencia += paquete.Cantidad;
+            _contexto.Entry(AumentarProducido).State = EntityState.Modified;
+            _contexto.SaveChanges();
+        }
+
         if (paqueteAnterior != null)
         {
             foreach (var item in paqueteAnterior.DetallePaquetes)
@@ -106,15 +125,6 @@ public class PaqueteBLL
 
                 }
             }
-
-            
-             var pro = _contexto.Productos.Find(paquete.ProductoId);
-                    if(paquete.Cantidad != 0){
-                        pro.Existencia += paquete.Cantidad;
-                     _contexto.Entry(pro).State = EntityState.Modified;
-                    _contexto.SaveChanges();
-                    }
-
         }
         foreach (var item in paquete.DetallePaquetes)
         {
@@ -127,9 +137,6 @@ public class PaqueteBLL
 
             }
         }
-
-
-
     }
 
     public List<Paquete> GetList(Expression<Func<Paquete, bool>> criterio)
