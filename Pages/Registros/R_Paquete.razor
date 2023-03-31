@@ -23,13 +23,6 @@
                         class="oi oi-magnifying-glass" /> Buscar</button>
             </div>
 
-            @*Concepto*@
-            <div class="form-group">
-                <label>Concepto: </label><br>
-                <InputText @bind-Value="paquete.Descripcion" class="form-control" />
-                <ValidationMessage For="@(() => paquete.Descripcion)" />
-            </div>
-
             @*Fecha*@
             <div class="form-group">
                 <label>Fecha: </label><br>
@@ -37,6 +30,12 @@
                 <ValidationMessage For="@(() => paquete.Fecha)" />
             </div>
 
+            @*Concepto*@
+            <div class="form-group">
+                <label>Concepto: </label><br>
+                <InputText @bind-Value="paquete.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => paquete.Descripcion)" />
+            </div>
 
             @*--- Pago detalle ---*@
             <div class="card">

@@ -59,11 +59,11 @@ public class PaqueteBLL
                 }
             }
 
-            var AumentarProducido = _contexto.Productos.Find(eliminar.ProductoId);
-            if (eliminar.Cantidad != 0 && AumentarProducido != null)
+            var Producido = _contexto.Productos.Find(eliminar.ProductoId);
+            if (eliminar.Cantidad != 0 && Producido != null)
             {
-                AumentarProducido.Existencia -= eliminar.Cantidad;
-                _contexto.Entry(AumentarProducido).State = EntityState.Modified;
+                Producido.Existencia -= eliminar.Cantidad;
+                _contexto.Entry(Producido).State = EntityState.Modified;
                 _contexto.SaveChanges();
             }
 
