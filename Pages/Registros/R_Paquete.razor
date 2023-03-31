@@ -5,9 +5,9 @@
 
 @inject PaqueteBLL paqueteBLL
 @inject ProductosBLL productoBLL
-@inject NotificationService notificationService
+@inject NotificationService notify
 
-<EditForm Model="paquete" OnValidSubmit="Guardar">
+<EditForm Model="paquete" OnInvalidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header">
@@ -16,11 +16,9 @@
 
         <div class="card-body">
             @*PaqueteId*@
-            <div class="form-group">
-                <label>PaqueteId: </label><br>
-                <InputNumber @bind-Value="paquete.PaqueteId" class="form-control" /> <br>
-                <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i
-                        class="oi oi-magnifying-glass" /> Buscar</button>
+            <div class="input-group">
+                <InputNumber @bind-Value="paquete.PaqueteId" class="form-control" />
+                <button type="button" class="btn btn-primary" @onclick="Buscar"><span class="oi oi-magnifying-glass"></span></button>
             </div>
 
             @*Fecha*@
@@ -98,7 +96,7 @@
                         </tbody>
                     </table>
                 </div>
-                <label>Total: @paquete.Cantidad</label>
+                <label>Total: @total</label>
             </div>
 
             @*--- Producido ---*@
@@ -112,7 +110,6 @@
                     <label>Producto: </label><br>
                     <InputSelect class="form-select" @bind-Value="paquete.ProductoId">
                         @foreach (Productos item in productoBLL.GetList(o => true))
-
                         {
                             <option value="@item.ProductoId">@item.Descripcion</option>
                         }
@@ -121,7 +118,7 @@
 
                 @*Producido*@
                 <div class="form-group">
-                    <label>Cantidad:  </label><br>
+                    <label>Cantidad: </label><br>
                     <InputNumber @bind-Value="paquete.Cantidad" class="form-control" />
                     <ValidationMessage For="@(() => paquete.Cantidad)" />
                 </div>
@@ -132,7 +129,7 @@
             <div class="form-group text-center" display: inline-block>
                 <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-file" /> Nuevo
                 </button>
-                <button class="btn btn-lg btn-success"><i class="oi oi-document" /> Guardar </button>
+                <button type="button" class="btn btn-lg btn-success" @onclick="Guardar"><i class="oi oi-document" /> Guardar </button>
                 <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />
                     Eliminar </button>
             </div>
@@ -149,6 +146,7 @@
     public Paquete paquete { get; set; } = new Paquete();
     public Productos producto { get; set; } = new Productos();
     public DetallePaquetes detalle { get; set; } = new DetallePaquetes();
+    public int total = 0;
 
     protected override void OnInitialized()
     {
@@ -179,13 +177,7 @@
 
         if (paqueteBLL.Guardar(this.paquete))
         {
-            ShowNotification(
-            new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Success,
-                    Summary = "Se ha guardado con exito."
-                }
-            );
+            notify.ShowNotification("Se ha guardado correctamente", NotificationSeverity.Success);
             this.Nuevo();
         }
     }
@@ -206,45 +198,31 @@
         {
             if (paqueteBLL.Eliminar(paquete.PaqueteId))
             {
-                ShowNotification(
-                new NotificationMessage
-                    {
-                        Severity = NotificationSeverity.Info,
-                        Summary = "Se ha eliminado con exito."
-                    }
-                );
+                notify.ShowNotification("Se ha eliminado correctamente", NotificationSeverity.Error);
                 Nuevo();
             }
         }
         else
         {
-            ShowNotification(
-            new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "No hay elemento para borrar."
-                }
-            );
+            notify.ShowNotification("No hay nada que eliminar", NotificationSeverity.Error);
             return;
         }
     }
     void AgregarDetalle()
     {
-        var producto = productoBLL.Buscar(detalle.ProductoId);
-        if (detalle.CantidadPaquete <= producto?.Existencia)
+        if (detalle.CantidadPaquete > 0 && detalle?.ProductoId != null)
         {
-            this.paquete.DetallePaquetes.Add(this.detalle);
-            this.detalle = new DetallePaquetes();
-        }
-        else
-        {
-            ShowNotification(
-            new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "La cantidad solicitada excede la existencia."
-                }
-            );
+            var producto = productoBLL.Buscar(detalle.ProductoId);
+            if (detalle.CantidadPaquete <= producto?.Existencia)
+            {
+                this.paquete.DetallePaquetes.Add(this.detalle);
+                total += detalle.CantidadPaquete;
+                this.detalle = new DetallePaquetes();
+            }
+            else
+            {
+                notify.ShowNotification("La cantidad solicitada excede la existencia", NotificationSeverity.Error);
+            }
         }
     }
 
@@ -253,18 +231,7 @@
         if (paquete.DetallePaquetes != null && detalleId > 0)
         {
             paquete.DetallePaquetes.RemoveAll(o => o.DetallePaqueteId == detalleId);
-            ShowNotification(
-            new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Info,
-                    Summary = "Se ha eliminado con exito."
-                }
-            );
+            notify.ShowNotification("El detalle se ha eliminado correctamente", NotificationSeverity.Info);
         }
-    }
-
-    void ShowNotification(NotificationMessage message)
-    {
-        notificationService.Notify(message);
     }
 }

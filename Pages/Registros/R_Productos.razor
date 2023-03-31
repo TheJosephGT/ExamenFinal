@@ -15,11 +15,9 @@
 
         <div class="card-body">
             @*ProductoId*@
-            <div class="form-group">
-                <label>ProductoId: </label><br>
-                <InputNumber @bind-Value="producto.ProductoId" class="form-control" /> <br>
-                <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i
-                        class="oi oi-magnifying-glass" /> Buscar</button>
+            <div class="input-group">
+                <InputNumber @bind-Value="producto.ProductoId" class="form-control" />
+                <button type="button" class="btn btn-primary" @onclick="Buscar"><span class="oi oi-magnifying-glass"></span></button>
             </div>
 
             @*Descripcion*@

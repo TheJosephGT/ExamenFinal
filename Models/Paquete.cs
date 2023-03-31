@@ -6,7 +6,7 @@ public class Paquete{
     [Key]
     public int PaqueteId { get; set; }
     [Required(ErrorMessage ="La fecha es requerida.")]
-    public DateOnly Fecha { get; set; }
+    public DateOnly Fecha { get; set; } = DateOnly.FromDateTime(DateTime.Now);
     [Required(ErrorMessage ="El descripcion es requerida.")]
     public string? Descripcion { get; set; }
     public int ProductoId { get; set; }
