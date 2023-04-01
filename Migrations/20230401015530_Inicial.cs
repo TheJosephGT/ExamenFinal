@@ -75,7 +75,8 @@ namespace Parcial2_Joseph.Migrations
                     { 2, 300.0, "Pistachos", 50, 28.0 },
                     { 3, 250.0, "Ciruelas", 50, 50.0 },
                     { 4, 350.0, "Pasas", 50, 100.0 },
-                    { 5, 250.0, "Arándanos", 50, 10.0 }
+                    { 5, 250.0, "Arándanos", 50, 10.0 },
+                    { 6, 250.0, "Mixtos", 10, 10.0 }
                 });
 
             migrationBuilder.CreateIndex(

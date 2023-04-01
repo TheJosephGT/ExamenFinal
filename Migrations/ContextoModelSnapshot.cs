@@ -125,6 +125,14 @@ namespace Parcial2_Joseph.Migrations
                             Descripcion = "Arándanos",
                             Existencia = 50,
                             Precio = 10.0
+                        },
+                        new
+                        {
+                            ProductoId = 6,
+                            Costo = 250.0,
+                            Descripcion = "Mixtos",
+                            Existencia = 10,
+                            Precio = 10.0
                         });
                 });
 

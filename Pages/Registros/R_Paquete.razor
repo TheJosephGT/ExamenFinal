@@ -109,7 +109,7 @@
                 <div class="form-group">
                     <label>Producto: </label><br>
                     <InputSelect class="form-select" @bind-Value="paquete.ProductoId">
-                        @foreach (Productos item in productoBLL.GetList(o => true))
+                        @foreach (Productos item in productoBLL.GetList(o => true).Where(o => o.ProductoId == 6))
                         {
                             <option value="@item.ProductoId">@item.Descripcion</option>
                         }

@@ -51,5 +51,14 @@ public class Contexto : DbContext{
                 Existencia = 50
             }
         );
+        modelBuilder.Entity<Productos>().HasData(
+            new Productos{
+                ProductoId = 6,
+                Descripcion = "Mixtos",
+                Costo = 250,
+                Precio = 10,
+                Existencia = 10
+            }
+        );
     }
 }
