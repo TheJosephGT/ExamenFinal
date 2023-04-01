@@ -9,7 +9,9 @@ public class Paquete{
     public DateOnly Fecha { get; set; } = DateOnly.FromDateTime(DateTime.Now);
     [Required(ErrorMessage ="El descripcion es requerida.")]
     public string? Descripcion { get; set; }
+    [Required(ErrorMessage ="El productoId es requerida.")]
     public int ProductoId { get; set; }
+    [Range(0, 10000000, ErrorMessage = "La cantidad es requerida.")]
     public int Cantidad {get; set;}
     
     [ForeignKey("PaqueteId")]

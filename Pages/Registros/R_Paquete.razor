@@ -51,6 +51,7 @@
                             <option value="@item.ProductoId">@item.Descripcion</option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="@(() => paquete.ProductoId)" />
                 </div>
 
                 @*Cantidad*@
@@ -113,6 +114,7 @@
                             <option value="@item.ProductoId">@item.Descripcion</option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="@(() => paquete.ProductoId)" />
                 </div>
 
                 @*Producido*@
@@ -128,7 +130,7 @@
             <div class="form-group text-center" display: inline-block>
                 <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-file" /> Nuevo
                 </button>
-                <button type="button" class="btn btn-lg btn-success" @onclick="Guardar"><i class="oi oi-document" /> Guardar </button>
+                <button type="submit" class="btn btn-lg btn-success" @onclick="Guardar"><i class="oi oi-document" /> Guardar </button>
                 <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />
                     Eliminar </button>
             </div>
@@ -174,10 +176,13 @@
     {
         if (!Validar()) { return; }
 
-        if (paqueteBLL.Guardar(this.paquete))
+        if (paqueteBLL.Guardar(this.paquete) && paquete.Cantidad > 0)
         {
             notify.ShowNotification("Se ha guardado correctamente", NotificationSeverity.Success);
             this.Nuevo();
+        }else
+        {
+            notify.ShowNotification("Debes llenar el producido y el detalle", NotificationSeverity.Error);
         }
     }
 
