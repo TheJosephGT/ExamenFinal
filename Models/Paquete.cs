@@ -11,7 +11,7 @@ public class Paquete{
     public string? Descripcion { get; set; }
     [Required(ErrorMessage ="El productoId es requerida.")]
     public int ProductoId { get; set; }
-    [Range(0, 10000000, ErrorMessage = "La cantidad es requerida.")]
+    [Range(0, 10000000, ErrorMessage = "La cantidad no tiene un valor valido")]
     public int Cantidad {get; set;}
     
     [ForeignKey("PaqueteId")]

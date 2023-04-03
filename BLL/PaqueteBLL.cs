@@ -92,7 +92,7 @@ public class PaqueteBLL
         }
 
         var AumentarProducido = _contexto.Productos.Find(paquete.ProductoId);
-        if (paquete.Cantidad != 0 && AumentarProducido != null)
+        if (paquete.Cantidad > 0 && AumentarProducido != null)
         {
             AumentarProducido.Existencia += paquete.Cantidad;
             _contexto.Entry(AumentarProducido).State = EntityState.Modified;
@@ -105,7 +105,7 @@ public class PaqueteBLL
         var paqueteAnterior = _contexto.Paquete.Where(o => o.PaqueteId == paquete.PaqueteId).Include(o => o.DetallePaquetes).AsNoTracking().SingleOrDefault();
 
         var AumentarProducido = _contexto.Productos.Find(paquete.ProductoId);
-        if (paquete.Cantidad != 0 && AumentarProducido != null)
+        if (paquete.Cantidad > 0 && AumentarProducido != null)
         {
             AumentarProducido.Existencia += paquete.Cantidad;
             _contexto.Entry(AumentarProducido).State = EntityState.Modified;
